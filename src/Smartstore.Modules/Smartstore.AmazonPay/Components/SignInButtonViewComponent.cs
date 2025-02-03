@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Smartstore.AmazonPay.Services;
+using Smartstore.PWA.Models;
 using Smartstore.Web.Components;
 
 namespace Smartstore.AmazonPay.Components
@@ -30,11 +31,7 @@ namespace Smartstore.AmazonPay.Components
                 return Empty();
             }
 
-            var model = new AmazonPayButtonModel(
-                _settings,
-                "SignIn",
-                currencyCode,
-                Services.WorkContext.WorkingLanguage.UniqueSeoCode);
+            var model = new PwaLoginButtonModel();
 
             return View(model);
         }

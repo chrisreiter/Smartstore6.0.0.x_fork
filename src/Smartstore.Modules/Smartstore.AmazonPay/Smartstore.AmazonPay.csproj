@@ -13,5 +13,6 @@
 			<CopyLocal>False</CopyLocal>
 			<CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
 		</ProjectReference>
+		<ProjectReference Include="..\Smartstore.PWA\Smartstore.PWA.csproj" />
 	</ItemGroup>
 </Project>

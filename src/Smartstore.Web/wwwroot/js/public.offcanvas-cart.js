@@ -8,6 +8,7 @@ var AjaxCart = (function ($, window, document, undefined) {
     $(function () {
         // GLOBAL event handler
         $("body").on("click", ".ajax-cart-link", function (e) {
+
             //e.stopPropagation();
             return AjaxCart.executeRequest(this);
         });
@@ -123,6 +124,7 @@ var AjaxCart = (function ($, window, document, undefined) {
                             : "ajaxcart.error",
                         $.extend(cmd, { response: response })
                     );
+
 
                     if (isSuccess && (cmd.action === "addfromwishlist" || cmd.action === "addfromcart")) {
                         // special case when item was copied/moved from wishlist

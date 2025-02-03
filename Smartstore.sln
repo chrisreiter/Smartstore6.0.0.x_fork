@@ -83,6 +83,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smartstore.Data.PostgreSql"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smartstore.Data.Sqlite", "src\Smartstore.Data\Smartstore.Data.Sqlite\Smartstore.Data.Sqlite.csproj", "{32683DB7-C20D-4ABD-BE90-569168B2A68F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smartstore.PWA", "src\Smartstore.Modules\Smartstore.PWA\Smartstore.PWA.csproj", "{2D3205FD-EBC5-4946-93E5-CC2BA0BED8B2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRS.TranslationService", "src\Smartstore.Modules\CRS.TranslationService\CRS.TranslationService.csproj", "{E716AE9A-5EE3-4308-8519-1B3AE95DB1BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -270,6 +274,18 @@ Global
 		{32683DB7-C20D-4ABD-BE90-569168B2A68F}.DebugNoRazorCompile|Any CPU.Build.0 = DebugNoRazorCompile|Any CPU
 		{32683DB7-C20D-4ABD-BE90-569168B2A68F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32683DB7-C20D-4ABD-BE90-569168B2A68F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D3205FD-EBC5-4946-93E5-CC2BA0BED8B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D3205FD-EBC5-4946-93E5-CC2BA0BED8B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D3205FD-EBC5-4946-93E5-CC2BA0BED8B2}.DebugNoRazorCompile|Any CPU.ActiveCfg = DebugNoRazorCompile|Any CPU
+		{2D3205FD-EBC5-4946-93E5-CC2BA0BED8B2}.DebugNoRazorCompile|Any CPU.Build.0 = DebugNoRazorCompile|Any CPU
+		{2D3205FD-EBC5-4946-93E5-CC2BA0BED8B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D3205FD-EBC5-4946-93E5-CC2BA0BED8B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E716AE9A-5EE3-4308-8519-1B3AE95DB1BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E716AE9A-5EE3-4308-8519-1B3AE95DB1BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E716AE9A-5EE3-4308-8519-1B3AE95DB1BE}.DebugNoRazorCompile|Any CPU.ActiveCfg = DebugNoRazorCompile|Any CPU
+		{E716AE9A-5EE3-4308-8519-1B3AE95DB1BE}.DebugNoRazorCompile|Any CPU.Build.0 = DebugNoRazorCompile|Any CPU
+		{E716AE9A-5EE3-4308-8519-1B3AE95DB1BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E716AE9A-5EE3-4308-8519-1B3AE95DB1BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -301,6 +317,8 @@ Global
 		{0C26B088-A8F6-42E8-AB8D-D9D297FDD72C} = {E5C1AA43-6B44-4EFA-8DE9-6070EE007CE3}
 		{1A016177-D0EA-49AD-9BD5-BAD99D9D08F9} = {82A38DDA-C944-4C15-AF43-86732F8ED15A}
 		{32683DB7-C20D-4ABD-BE90-569168B2A68F} = {82A38DDA-C944-4C15-AF43-86732F8ED15A}
+		{2D3205FD-EBC5-4946-93E5-CC2BA0BED8B2} = {E5C1AA43-6B44-4EFA-8DE9-6070EE007CE3}
+		{E716AE9A-5EE3-4308-8519-1B3AE95DB1BE} = {E5C1AA43-6B44-4EFA-8DE9-6070EE007CE3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A0A0B995-5D0B-458E-BCC0-1071B76949D1}

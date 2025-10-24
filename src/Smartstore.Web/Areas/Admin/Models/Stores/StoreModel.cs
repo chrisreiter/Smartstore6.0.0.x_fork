@@ -86,6 +86,12 @@ namespace Smartstore.Admin.Models.Stores
         [LocalizedDisplay("*DefaultCurrencyId")]
         public int DefaultCurrencyId { get; set; }
 
+        [LocalizedDisplay("*TenantId")]
+        public int? TenantId { get; set; }
+
+        [LocalizedDisplay("*IsSharedResource")]
+        public bool IsSharedResource { get; set; }
+
         public string EditUrl { get; set; }
     }
 

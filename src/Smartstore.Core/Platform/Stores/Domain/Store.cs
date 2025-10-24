@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Smartstore.Core.Common;
@@ -27,6 +28,16 @@ namespace Smartstore.Core.Stores
                 .HasForeignKey(x => x.PrimaryExchangeRateCurrencyId)
                 .OnDelete(DeleteBehavior.Restrict);
 #pragma warning restore CS0618
+
+            // Multi-tenant relationships
+            builder
+                .HasOne(x => x.Tenant)
+                .WithMany(x => x.Stores)
+                .HasForeignKey(x => x.TenantId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasIndex(x => x.TenantId)
+                .HasDatabaseName("IX_Store_TenantId");
         }
     }
 
@@ -171,6 +182,16 @@ namespace Smartstore.Core.Stores
         /// </summary>
         public int PrimaryExchangeRateCurrencyId { get; set; }
 
+        /// <summary>
+        /// Gets or sets the tenant identifier for multi-tenant environments
+        /// </summary>
+        public int? TenantId { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this store represents a shared resource that can be used across tenants
+        /// </summary>
+        public bool IsSharedResource { get; set; } = false;
+
         private Currency _defaultCurrency;
         /// <summary>
         /// Gets or sets the default currency.
@@ -191,6 +212,16 @@ namespace Smartstore.Core.Stores
         {
             get => _primaryExchangeRateCurrency ?? LazyLoader.Load(this, ref _primaryExchangeRateCurrency);
             set => _primaryExchangeRateCurrency = value;
+        }
+
+        private Tenant _tenant;
+        /// <summary>
+        /// Gets or sets the tenant this store belongs to
+        /// </summary>
+        public Tenant Tenant
+        {
+            get => _tenant ?? LazyLoader.Load(this, ref _tenant);
+            set => _tenant = value;
         }
 
 

@@ -918,5 +918,122 @@ dotnet run --project src/Smartstore.Web
 
 ---
 
+## 🏢 MULTI-TENANT ARCHITECTURE
+
+### Mandantenfähigkeit Implementierung
+
+#### Store Extension Ansatz (Empfohlen)
+Nutzt die bestehende Multi-Store Architektur von Smartstore und erweitert sie um echte Mandantenfähigkeit.
+
+**Konzept**: Erweitere die bestehende Store-Entity für Multi-Tenant Isolation
+
+```csharp
+// Erweitere bestehende Store-Entity
+public class Store : BaseEntity, ITenantContainer
+{
+    public int TenantId { get; set; }
+    public Tenant Tenant { get; set; }
+    public bool IsSharedResource { get; set; } // Für geteilte Daten
+}
+
+// Neue Tenant Entity
+public class Tenant : BaseEntity
+{
+    public string Name { get; set; }
+    public string Domain { get; set; }
+    public string DatabaseSchema { get; set; } // Optional für Schema-Isolation
+    public bool IsActive { get; set; }
+    public DateTime CreatedOn { get; set; }
+
+    public ICollection<Store> Stores { get; set; }
+    public ICollection<TenantSettings> Settings { get; set; }
+}
+
+// Tenant Resolution Service
+public interface ITenantService
+{
+    int GetCurrentTenantId();
+    Tenant GetTenant(string hostname);
+    void SetCurrentTenant(int tenantId);
+    Task<Tenant> ResolveTenantAsync(string host);
+}
+
+// Multi-Tenant Store Service
+public class MultiTenantStoreService : IStoreService
+{
+    public IQueryable<Store> GetStoresByTenant(int tenantId)
+    {
+        return _storeRepository.Table.Where(s => s.TenantId == tenantId);
+    }
+}
+```
+
+#### Implementierungsplan
+
+**Phase 1: Tenant-Entity einführen**
+- Tenant-Entity und Migration erstellen
+- TenantId zu Store-Entity hinzufügen
+- Tenant Resolution Middleware implementieren
+
+**Phase 2: Erweiterte Services**
+- ITenantStoreContext erweitern
+- Multi-Tenant Service Registration
+- Admin-UI für Tenant-Management
+
+**Phase 3: Daten-Isolation**
+- Optional: Schema-per-Tenant Support
+- Tenant-aware Query Filters
+- Shared vs Isolated Data Management
+
+#### Migration Struktur
+```sql
+-- Neue Tenant Tabelle
+CREATE TABLE [dbo].[Tenant] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [Name] nvarchar(255) NOT NULL,
+    [Domain] nvarchar(255) NOT NULL,
+    [DatabaseSchema] nvarchar(50) NULL,
+    [IsActive] bit NOT NULL DEFAULT 1,
+    [CreatedOnUtc] datetime2 NOT NULL,
+    CONSTRAINT [PK_Tenant] PRIMARY KEY ([Id])
+);
+
+-- Store Tabelle erweitern
+ALTER TABLE [dbo].[Store] 
+ADD [TenantId] int NULL,
+    [IsSharedResource] bit NOT NULL DEFAULT 0;
+
+-- Foreign Key zu Tenant
+ALTER TABLE [dbo].[Store]
+ADD CONSTRAINT [FK_Store_Tenant_TenantId] 
+FOREIGN KEY ([TenantId]) REFERENCES [dbo].[Tenant] ([Id]);
+```
+
+#### Vorteile des Store Extension Ansatzes
+- ✅ Minimale Änderungen an bestehender Architektur
+- ✅ Nutzt bewährte Smartstore-Patterns
+- ✅ Schrittweise Migration möglich
+- ✅ Flexibel zwischen Shared/Isolated Data
+- ✅ Unterstützt sowohl kleine als auch große Mandanten
+
+#### Alternative Ansätze (nicht empfohlen)
+
+**Option 1: Single Database + Tenant Isolation**
+- TenantId in allen Entitäten
+- Global Query Filter
+- Risk für Data Leaks
+
+**Option 2: Database-per-Tenant**
+- Separate Datenbank pro Mandant
+- Hoher Verwaltungsaufwand
+- Teuer bei vielen kleinen Mandanten
+
+**Option 3: Schema-per-Tenant**
+- Eine DB, separate Schemas pro Mandant
+- Komplexe Schema-Verwaltung
+- Schwierige Migration
+
+---
+
 *Last Updated: 2025-01-24*
-*Version: 6.2.0.x_CRSOFT*
+*Version: 6.2.0.x_CRSOFT_MultiTenant*

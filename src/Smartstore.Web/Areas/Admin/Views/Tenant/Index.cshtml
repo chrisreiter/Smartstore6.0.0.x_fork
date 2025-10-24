@@ -1,0 +1,81 @@
+@model dynamic
+
+@{
+    ViewData["Title"] = T("Admin.System.Tenants");
+    
+    var gridViewData = new ViewDataDictionary(ViewData)
+    {
+        ["parent-id"] = 0
+    };
+}
+
+<div class="section-header">
+    <div class="title">
+        <i class="fa fa-fw fa-users"></i>
+        @T("Admin.System.Tenants")
+    </div>
+    <div class="options">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fa fa-plus"></i>
+            <span>@T("Admin.System.Tenants.AddNew")</span>
+        </a>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                @(Html.SmartGrid<TenantModel>()
+                    .Name("tenants-grid")
+                    .KeyMemberName(x => x.Id)
+                    .DataSource(GridDataSource.ForAction("TenantList"))
+                    .Columns(columns =>
+                    {
+                        columns.For(x => x.Name)
+                            .Text(T("Admin.System.Tenants.Fields.Name"))
+                            .Sortable(true)
+                            .Template(x => $"<a href='{Url.Action("Edit", new { id = x.Id })}'>{x.Name}</a>");
+
+                        columns.For(x => x.Domain)
+                            .Text(T("Admin.System.Tenants.Fields.Domain"))
+                            .Sortable(true);
+
+                        columns.For(x => x.DatabaseSchema)
+                            .Text(T("Admin.System.Tenants.Fields.DatabaseSchema"))
+                            .Sortable(false);
+
+                        columns.For(x => x.IsActive)
+                            .Text(T("Admin.System.Tenants.Fields.IsActive"))
+                            .Sortable(true)
+                            .Template("<i class='fa fa-fw @(item.IsActive ? "fa-check text-success" : "fa-times text-danger")'></i>");
+
+                        columns.For(x => x.StoreCount)
+                            .Text(T("Admin.Configuration.Stores"))
+                            .Sortable(false)
+                            .Template(x => x.StoreCount > 0 ? x.StoreCount.ToString() : "-");
+
+                        columns.For(x => x.CreatedOn)
+                            .Text(T("Admin.System.Tenants.Fields.CreatedOn"))
+                            .Sortable(true)
+                            .Formatter("date");
+
+                        columns.Command()
+                            .Text(T("Common.Edit"))
+                            .Command("edit")
+                            .Action("Edit")
+                            .CssClass("btn btn-sm btn-primary");
+                    })
+                    .Paging(paging => paging.PageSize(25).ShowSizeSelection())
+                    .Sorting(sorting => sorting.SortedBy(x => x.Name))
+                    .ToolBar(toolbar =>
+                    {
+                        toolbar.Insert()
+                            .Text(T("Admin.System.Tenants.AddNew"))
+                            .Action("Create")
+                            .CssClass("btn btn-primary");
+                    }))
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,147 @@
+@using Smartstore.Admin.Models.Stores
+
+@model TenantModel
+
+<div class="adminContent">
+    <div class="adminRow">
+        <div class="adminTitle">
+            <smart-label asp-for="Name" />
+        </div>
+        <div class="adminData">
+            <smart-textbox asp-for="Name" sm-required="true" />
+            <span asp-validation-for="Name"></span>
+        </div>
+    </div>
+    <div class="adminRow">
+        <div class="adminTitle">
+            <smart-label asp-for="Domain" />
+        </div>
+        <div class="adminData">
+            <smart-textbox asp-for="Domain" sm-required="true" placeholder="example.com" />
+            <span asp-validation-for="Domain"></span>
+            <div class="form-text text-muted">
+                @T("Admin.System.Tenants.Fields.Domain.Hint")
+                <br />
+                <strong>@T("Common.Examples"):</strong>
+                <ul class="mb-0">
+                    <li>shop1.example.com</li>
+                    <li>shop2.example.com</li>
+                    <li>*.example.com (wildcard)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="adminRow">
+        <div class="adminTitle">
+            <smart-label asp-for="DatabaseSchema" />
+        </div>
+        <div class="adminData">
+            <smart-textbox asp-for="DatabaseSchema" placeholder="tenant1" />
+            <span asp-validation-for="DatabaseSchema"></span>
+            <div class="form-text text-muted">
+                @T("Admin.System.Tenants.Fields.DatabaseSchema.Hint")
+            </div>
+        </div>
+    </div>
+    <div class="adminRow">
+        <div class="adminTitle">
+            <smart-label asp-for="IsActive" />
+        </div>
+        <div class="adminData">
+            <smart-checkbox asp-for="IsActive" />
+            <span asp-validation-for="IsActive"></span>
+        </div>
+    </div>
+    
+    @if (Model.Id > 0)
+    {
+        <div class="adminRow">
+            <div class="adminTitle">
+                <smart-label asp-for="CreatedOn" />
+            </div>
+            <div class="adminData">
+                <div class="form-control-plaintext">
+                    @Html.SmartDateTime(Model.CreatedOn)
+                </div>
+            </div>
+        </div>
+        <div class="adminRow">
+            <div class="adminTitle">
+                <smart-label asp-for="UpdatedOn" />
+            </div>
+            <div class="adminData">
+                <div class="form-control-plaintext">
+                    @Html.SmartDateTime(Model.UpdatedOn)
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (Model.Id > 0)
+{
+    <div class="adminContent">
+        <div class="adminRow">
+            <div class="adminTitle">
+                @T("Admin.Configuration.Stores")
+            </div>
+            <div class="adminData wide">
+                @(Html.SmartGrid<StoreModel>()
+                    .Name("tenant-stores-grid")
+                    .KeyMemberName(x => x.Id)
+                    .DataSource(GridDataSource.ForAction("TenantStoreList", "Tenant", new { tenantId = Model.Id }))
+                    .Columns(columns =>
+                    {
+                        columns.For(x => x.Name)
+                            .Text(T("Admin.Configuration.Stores.Fields.Name"))
+                            .Template(x => $"<a href='{Url.Action("Edit", "Store", new { id = x.Id })}'>{x.Name}</a>");
+
+                        columns.For(x => x.Url)
+                            .Text(T("Admin.Configuration.Stores.Fields.Url"));
+
+                        columns.For(x => x.SslEnabled)
+                            .Text(T("Admin.Configuration.Stores.Fields.SslEnabled"))
+                            .Template("<i class='fa fa-fw @(item.SslEnabled ? \"fa-check text-success\" : \"fa-times text-muted\")'></i>");
+
+                        columns.For(x => x.IsSharedResource)
+                            .Text(T("Admin.Configuration.Stores.Fields.IsSharedResource"))
+                            .Template("<i class='fa fa-fw @(item.IsSharedResource ? \"fa-check text-info\" : \"fa-times text-muted\")'></i>");
+
+                        columns.For(x => x.DisplayOrder)
+                            .Text(T("Common.DisplayOrder"));
+                    })
+                    .Paging(paging => paging.PageSize(10))
+                    .Sorting(sorting => sorting.SortedBy(x => x.DisplayOrder).ThenBy(x => x.Name)))
+            </div>
+        </div>
+    </div>
+}
+
+<script sm-target-zone="scripts" data-origin="tenant-form">
+$(function() {
+    // Domain validation
+    $('#@Html.IdFor(m => m.Domain)').on('blur', function() {
+        var domain = $(this).val().trim();
+        var excludeId = @(Model.Id);
+        
+        if (domain) {
+            $.post('@Url.Action("ValidateDomain")', { domain: domain, excludeId: excludeId }, function(result) {
+                var $input = $('#@Html.IdFor(m => m.Domain)');
+                var $validation = $input.next('.field-validation-error, .field-validation-valid');
+                
+                if (!result.isAvailable) {
+                    $input.addClass('input-validation-error');
+                    if ($validation.length === 0) {
+                        $validation = $('<span class="field-validation-error"></span>');
+                        $input.after($validation);
+                    }
+                    $validation.text(result.message).removeClass('field-validation-valid').addClass('field-validation-error');
+                } else {
+                    $input.removeClass('input-validation-error');
+                    $validation.removeClass('field-validation-error').addClass('field-validation-valid').text('');
+                }
+            });
+        }
+    });
+});
+</script>

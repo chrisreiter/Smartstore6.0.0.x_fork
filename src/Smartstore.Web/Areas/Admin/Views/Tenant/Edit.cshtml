@@ -1,0 +1,55 @@
+@using Smartstore.Admin.Models.Stores
+
+@model TenantModel
+
+@{
+    ViewData["Title"] = T("Admin.System.Tenants.EditDetails");
+}
+
+<form asp-action="Edit" method="post">
+    <input asp-for="Id" type="hidden" />
+    
+    <div class="section-header">
+        <div class="title">
+            <i class="fa fa-fw fa-pencil-alt"></i>
+            @T("Admin.System.Tenants.EditDetails") - @Model.Name
+        </div>
+        <div class="options">
+            <zone name="admin_button_toolbar_before" />
+            <button type="submit" name="save" value="save" class="btn btn-warning">
+                <i class="fa fa-check"></i>
+                <span>@T("Admin.Common.Save")</span>
+            </button>
+            <button type="submit" name="save-continue" value="save-continue" class="btn btn-secondary">
+                <span>@T("Admin.Common.SaveContinue")</span>
+            </button>
+            <a class="btn btn-outline-secondary" href="@Url.Action("Index")">
+                @T("Admin.Common.Back")
+            </a>
+            <button type="button" id="tenant-delete" class="btn btn-danger">
+                <i class="fa fa-trash-alt"></i>
+                <span>@T("Admin.Common.Delete")</span>
+            </button>
+            <zone name="admin_button_toolbar_after" />
+        </div>
+    </div>
+
+    @await Html.PartialAsync("_CreateOrUpdate", Model)
+</form>
+
+<script sm-target-zone="scripts" data-origin="tenant-edit">
+$(function() {
+    $('#tenant-delete').on('click', function(e) {
+        e.preventDefault();
+        
+        displayConfirmation({
+            message: @T("Admin.Common.DeleteConfirmation").JsText,
+            callback: function(result) {
+                if (result) {
+                    setLocation('@Url.Action("Delete", new { id = Model.Id })');
+                }
+            }
+        });
+    });
+});
+</script>

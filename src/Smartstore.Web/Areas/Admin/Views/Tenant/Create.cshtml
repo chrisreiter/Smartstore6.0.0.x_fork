@@ -1,0 +1,32 @@
+@using Smartstore.Admin.Models.Stores
+
+@model TenantModel
+
+@{
+    ViewData["Title"] = T("Admin.System.Tenants.AddNew");
+}
+
+<form asp-action="Create" method="post">
+    <div class="section-header">
+        <div class="title">
+            <i class="fa fa-fw fa-plus"></i>
+            @T("Admin.System.Tenants.AddNew")
+        </div>
+        <div class="options">
+            <zone name="admin_button_toolbar_before" />
+            <button type="submit" name="save" value="save" class="btn btn-warning">
+                <i class="fa fa-check"></i>
+                <span>@T("Admin.Common.Save")</span>
+            </button>
+            <button type="submit" name="save-continue" value="save-continue" class="btn btn-secondary">
+                <span>@T("Admin.Common.SaveContinue")</span>
+            </button>
+            <a class="btn btn-outline-secondary" href="@Url.Action("Index")">
+                @T("Admin.Common.Cancel")
+            </a>
+            <zone name="admin_button_toolbar_after" />
+        </div>
+    </div>
+
+    @await Html.PartialAsync("_CreateOrUpdate", Model)
+</form>
